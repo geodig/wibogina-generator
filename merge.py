@@ -113,15 +113,12 @@ with col1:
         df['lat']=lat
         df['lon']=lon
         
-        # st.write(df)
-        
         latmean = df['lat'].mean()
         lonmean = df['lon'].mean()
         location = [latmean, lonmean]
         m = folium.Map(location=location, zoom_start=16
                         # , tiles="CartoDB positron"
                         )
-        
         
         icons = []
         for i in range(0,len(df)):
@@ -132,19 +129,6 @@ with col1:
         
         for i in range(0,len(df)):
             folium.Marker([df['lat'].iloc[i], df['lon'].iloc[i]], popup="ID: %s\nLabel: %s"%(df['ID'].iloc[i],df['BH_label'].iloc[i]), icon=icons[i]).add_to(m)
-        
-        # draw = Draw(export=False,
-        #             filename="shapefile.geojson",
-        #             position='topleft',
-        #             draw_options={'polyline': {'allowIntersection': False},
-        #                           'polygon': True,
-        #                           'rectangle': False,
-        #                           'circle': False,
-        #                           'marker': False,
-        #                           'circlemarker': False},
-        #             edit_options={'poly': {'allowIntersection': False}}) 
-        
-        # draw.add_to(m)
         
         with col2:
             mymap = st_folium(m, height=700, width=1000, returned_objects=[])
@@ -163,6 +147,7 @@ with col1:
         sheet_strati = wb_out.create_sheet('stratigraphy')
         sheet_topo = wb_out.create_sheet('topography')
         sheet_other = wb_out.create_sheet('others')
+        sheet_lab = wb_out.create_sheet('labtest')
         
         compilebutton = st.button("Compile", use_container_width=True)
         
@@ -238,6 +223,33 @@ with col1:
                         sheet_cpt.cell(j+3,3*i+2).value = sh_cpt.cell(j+2,2).value
                         sheet_cpt.cell(j+3,3*i+3).value = sh_cpt.cell(j+2,3).value
 
+            # Compiling lab test ------------------------------------------------------
+            for i in range(len(df)):
+                if "cpt" in df['ID'].iloc[i]:
+                    pass
+                if "spt" in df['ID'].iloc[i]:
+                    wb_in = openpyxl.load_workbook(uploaded_files[i], data_only=True)
+                    shin_lab = wb_in["labtest"]
+                    if shin_lab.max_row == 0:
+                        pass
+                    elif shin_lab.max_row == 2:
+                        for j in range(shin_lab.max_column):
+                            sheet_lab.cell(1,j+1).value = shin_lab.cell(1,j+1).value
+                            sheet_lab.cell(2,j+1).value = shin_lab.cell(2,j+1).value
+                    elif shin_lab.max_row > 2:
+                        for j in range(shin_lab.max_row - 2):
+                            start_row = sheet_lab.max_row
+                            for k in range(shin_lab.max_column):
+                                sheet_lab.cell(1,k+1).value = shin_lab.cell(1,k+1).value
+                                sheet_lab.cell(2,k+1).value = shin_lab.cell(2,k+1).value
+                                sheet_lab.cell(start_row+j+3,k+1).value = shin_lab.cell(3+j,k+1).value
+                    
+                    maxrow = sheet_lab.max_row
+                    wadah = []
+                    for i in range(maxrow):
+                       if sheet_lab.cell(i+1,1).value == None:
+                            sheet_lab.delete_rows(i+1)
+
             if check1:    
                 if uploaded_topo:
                     wbtopo = openpyxl.load_workbook(uploaded_topo, data_only=True)
@@ -275,15 +287,6 @@ with col1:
     
             wb_out.save(filename=filename)
             zipObj.write(filename)
-        
-        
-                
-        st.session_state["wb_out"] = wb_out
-
-
-
-     
-        if compilebutton:
             zipObj.close()
             
             ZipfileDotZip = "merged_file.zip"
@@ -295,3 +298,4 @@ with col1:
                     Download ZIP\
                 </a>"
             st.markdown(href, unsafe_allow_html=True)
+        
