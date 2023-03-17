@@ -1,6 +1,5 @@
 pandas
 openpyxl
-zipfile
 base64
 folium
 streamlit_folium
