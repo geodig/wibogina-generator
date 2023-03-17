@@ -1,6 +1,5 @@
 pandas
 openpyxl
-base64
 folium
 streamlit_folium
 matplotlib
