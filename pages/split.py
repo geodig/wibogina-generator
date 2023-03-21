@@ -9,6 +9,7 @@ import pandas as pd
 import openpyxl
 from zipfile import ZipFile
 import base64
+import datetime
 
 st.set_page_config(page_title="wibogina-generator", layout="centered")
 
@@ -34,7 +35,7 @@ if input_filename:
         project_code = st.text_input("Project code:")
         lithonaming = st.text_input("Lithology naming:")
         surveyor = st.text_input("Surveyor:")
-        date = st.date_input("Survey date:")
+        date = st.date_input("Survey date:", min_value=datetime.date(year=1980, month=1, day=1))
         date = str(date)
         remark = st.text_area("Remarks:")
         
