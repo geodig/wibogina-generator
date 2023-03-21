@@ -31,7 +31,7 @@ if input_filename:
     with col2:
         city = st.text_input("City:")
         province = st.text_input("Province:")
-        project_code = st.number_input("Project code:",step=1)
+        project_code = st.text_input("Project code:")
         lithonaming = st.text_input("Lithology naming:")
         surveyor = st.text_input("Surveyor:")
         date = st.date_input("Survey date:")
