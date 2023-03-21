@@ -149,7 +149,7 @@ with col1:
         sheet_other = wb_out.create_sheet('others')
         sheet_lab = wb_out.create_sheet('labtest')
         
-        compilebutton = st.button("Compile", use_container_width=True)
+        compilebutton = st.button("Merge", use_container_width=True)
         
         if compilebutton:            
             field_bhmgr = ['No','BH_ID','X','Y','Z','GWL']
